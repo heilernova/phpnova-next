@@ -1,0 +1,22 @@
+{
+    "name": "phpnova/nest",
+    "description": "Libreria para el desarrollo de API's en PHP",
+    "type": "library",
+    "license": "GLP-3.0-only",
+    "autoload": {
+        "psr-4": {
+            "Phpnova\\Next\\": "src/",
+            "App\\": "test/src"
+        }
+    },
+    "authors": [
+        {
+            "name": "Heiler Nova",
+            "email": "heilernova@outlook.com"
+        }
+    ],
+    "require": {
+        "symfony/yaml": "^6.3",
+        "firebase/php-jwt": "^6.5"
+    }
+}

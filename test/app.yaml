@@ -1,0 +1,5 @@
+version: 1.0.0.BETA
+timezone: '+00:00'
+debug: true
+private_keys:
+  jwt: eb52e801e49bb9522ae64ab57bdaae18dc2f525bd31b7bc0f8
