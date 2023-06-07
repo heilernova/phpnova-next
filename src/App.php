@@ -1,11 +1,14 @@
 <?php
 namespace Phpnova\Next;
 
+use Phpnova\Next\Http\Attributes\Body;
+use Phpnova\Next\Http\BodyValid;
 use Phpnova\Next\Http\Cors;
 use Phpnova\Next\Http\HttpExeption;
 use Phpnova\Next\Http\HttpFuns;
 use Phpnova\Next\Http\Request;
 use Phpnova\Next\Http\Response;
+use Phpnova\Next\Http\Validators\IsEmail;
 use Phpnova\Next\Routing\ControlRouter;
 use ReflectionClass;
 use ReflectionFunction;
@@ -91,7 +94,10 @@ class App
                 $reflection_request->getProperty("files")->setValue($this->request, []);
             }
     
+            $reflection_request->getProperty("queryParams")->setValue($this->request, $_GET);
+
             foreach($actions as $action){
+                $reflection_request->getProperty("params")->setValue($this->request, $action['params'] ?? []);
                 if (is_callable($action)){
                     $response = $action();
                     if (is_null($response)){
@@ -99,15 +105,22 @@ class App
                     }
                     break;
                 } else {
+                    $reflection_request->getProperty("params")->setValue($this->request, $action['params'] ?? []);
                     $response = $this->exceuteAction($action);
                 }
             }
         } catch (HttpExeption $httpExeption) {
 
+            $response = new Response( $httpExeption->getMessage(), $httpExeption->getCode());
+
         } catch (\Throwable $th) {
             $log = "[]";
             $response = new Response([
-                'message' => $th->getMessage()
+                'message' => $th->getMessage(),
+                'error' => [
+                    'line' => $th->getLine(),
+                    'file' => $th->getFile()
+                ]
             ], 500);
         }
 
@@ -170,14 +183,40 @@ class App
         $params = [];
         foreach ($action->getParameters() as $param) {
             $type = $param->getType();
+            # En caso de que sea una clase
             if ($type && !$param->getType()->isBuiltin()){
                 $class = $param->getType()->getName();
                 if ($class == Config::class){
                     $params[] = $this->config;
                 } else if ($class == Request::class){
                     $params[] = $this->request;
+                } else {
+                    $object = new $class();
+                    $reflectionObject = new ReflectionClass($object);
+                    foreach ($reflectionObject->getAttributes() as $classAttr){
+                        if ($classAttr->getName() == Body::class){
+                            $body = $this->request->body;
+                            try {
+                                $object = BodyValid::parce($body, $object);
+                            } catch (\Throwable $th) {
+                                throw new HttpExeption($th->getMessage(), 400);
+                            }
+                        }
+                    }          
+                    $params[] = $object;
                 }
                 continue;
+            } else {
+                # Es caso de ser un parametro nativo
+                if (array_key_exists($param->getName(), $this->request->params)){
+                    $params[] = $this->request->params[$param->getName()];
+                } else {
+                    if ($param->isOptional()){
+                        $param[] = $param->getDefaultValue();
+                    } else {
+                        throw new ThrowError("Falta parametros en la conuslta");
+                    }
+                }
             }
         }
         return $params;

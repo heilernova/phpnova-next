@@ -3,14 +3,16 @@
 use Phpnova\Next\Config;
 use Phpnova\Next\Http\Attributes\Body;
 use Phpnova\Next\Http\Request;
+use Phpnova\Next\Panel\Dto\CreateUserDto;
+use Phpnova\Next\Panel\Dto\CredentialsDto;
 use Phpnova\Next\Routing\Router as router;
 
 router::get('/', function(){
     return 'Aplicacion';
 });
 
-router::post('sign-in', function(#[Body]object $credentials){
-    return "Authenticarse";
+router::post('sign-in', function(CredentialsDto $credentials){
+    return $credentials;
 });
 
 router::get('config', function(Config $config){
@@ -26,10 +28,12 @@ router::use("users", function(){
         return $config->getUsers();
     });
 
-    router::post("/", function(Config $config, Request $req){
-        return $req;
-        $config->addUser("Hielern", "heilernova@gmail.com", "admin");
-        $config->save();
-        return true;
+    router::post("/", function(CreateUserDto $user){
+
+        return $user;
+    });
+
+    router::get("/:id", function(int $id = null){
+        return ["informacion del usuario $id"];
     });
 });

@@ -30,3 +30,5 @@ if (str_starts_with($content_type, 'multipart/form-data')){
 
     return $request_data;
 }
+
+return null;

@@ -11,5 +11,8 @@ class HttpExeption extends ErrorException
         if ($code > 499 && $code < 400){
             throw new ThrowError( "Solo se permiten códigos de error 400" );
         }
+
+        $this->message = $message;
+        $this->code = $code;
     }
 }
