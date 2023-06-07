@@ -2,7 +2,7 @@
     "name": "phpnova/nest",
     "description": "Libreria para el desarrollo de API's en PHP",
     "type": "library",
-    "license": "GLP-3.0-only",
+    "license": "GPL-3.0-only",
     "autoload": {
         "psr-4": {
             "Phpnova\\Next\\": "src/",
