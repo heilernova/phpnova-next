@@ -1,6 +1,7 @@
 <?php
 namespace Phpnova\Next\Factory;
 
+use DateTimeZone;
 use Phpnova\Next\App;
 use Phpnova\Next\Config;
 use Phpnova\Next\Routing\Router;
@@ -14,7 +15,6 @@ class AppFactory
     public static function create(?string $dir = null, bool $enablePanel = false)
     {
         # Directorio princial
-
         $appConfigPath = "$dir/app.yaml";
     
         # Si no existe el archivo se crea una configuración por defecto
@@ -24,10 +24,8 @@ class AppFactory
         }
 
         $object = Yaml::parse(file_get_contents($appConfigPath));
-        // echo gettype($object); exit;
 
         if ($enablePanel){
-            // require __DIR__ . '/../Panel/router.php';
             Router::use('nv-panel', fn() => require __DIR__ . '/../Panel/router.php');
         }
 
@@ -36,10 +34,11 @@ class AppFactory
         $reflection->getProperty("dir")->setValue($config, $dir);
         $reflection->getProperty("data")->setValue($config, $object);
 
+        date_default_timezone_set($config->getTimezone());
+
         $app = new App();
         $reflection = new ReflectionClass($app);
 
-        // echo gettype($config); exit;
         $reflection->getProperty("config")->setValue($app, $config);
 
         return $app;

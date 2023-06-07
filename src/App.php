@@ -2,6 +2,7 @@
 namespace Phpnova\Next;
 
 use Closure;
+use DateTime;
 use Phpnova\Next\Http\Attributes\Body;
 use Phpnova\Next\Http\BodyValid;
 use Phpnova\Next\Http\Cors;
@@ -24,6 +25,12 @@ class App
     
     /** @var (\Closure(Response $res): Response )|null */
     private mixed $handleResponse = null;
+    
+    /** @var (\Closure(Response $res): Response )|null */
+    private mixed $handleHttpException = null;
+    
+    /** @var (\Closure(\Throwable $res): Response )|null */
+    private mixed $handleExeption = null;
 
     public function getConfig()
     {
@@ -56,8 +63,24 @@ class App
     /**
      * @param (\Closure(Response $res): Response ) $funtion
      */
-    public function handleResponse(Closure $funtion){
+    public function handleResponse(Closure $funtion)
+    {
         $this->handleResponse = $funtion;
+    }
+
+    /**
+     * @param (\Closure(Response $res): Response ) $funtion
+     */
+    public function handleHttpException(Closure $function)
+    {
+        $this->handleHttpException = $function;
+    }
+    /**
+     * @param (\Closure(\Throwable $res): Response ) $funtion
+     */
+    public function handleException(Closure $function)
+    {
+        $this->handleExeption = $function;
     }
 
     public function use(mixed ...$args)
@@ -131,24 +154,35 @@ class App
                 $response = $fn($response);
             }
 
-
+            $this->logRequest($response);
         } catch (HttpExeption $httpExeption) {
 
             $response = new Response( $httpExeption->getMessage(), $httpExeption->getCode());
-
+            if ($this->handleHttpException){
+                $fn = $this->handleHttpException;
+                $response = $fn($response);
+            }
+            $this->logRequest($response);
         } catch (\Throwable $th) {
             $log = "[]";
-            $response = new Response([
+            $jsonResponse = [
                 'message' => $th->getMessage(),
                 'error' => [
                     'line' => $th->getLine(),
                     'file' => $th->getFile()
                 ]
-            ], 500);
+            ];
+            
+            $this->logRequest(new Response($jsonResponse, 500));
+
+            if (!$this->config->isDebug()){
+                $jsonResponse = [
+                    'message' => 'Error interno del servidor',
+                    'error' => 'Server errror'
+                ];
+            }
+            $response = new Response($jsonResponse, 500);
         }
-
-
-                    
 
         $reflection = new ReflectionClass($response);
         
@@ -242,5 +276,30 @@ class App
             }
         }
         return $params;
+    }
+
+    public function logRequest(Response $response): void
+    {
+        $dir = $this->config->getDir();
+        if (!file_exists("$dir/logs")) mkdir("$dir/logs");
+
+        $objectDate = new DateTime();
+        $date = $objectDate->format('Y-m-d H:i:s P');
+        $method = str_pad($this->request->method, 6, ' ');
+        $url = $this->request->url;
+        $body = json_encode($this->request->body);
+        $status = $response->getStatus();
+        $data = "[$date] $method $status '$url' $body\n";
+        $stream = fopen("$dir/logs/requests.log", 'a+');
+        fputs($stream, $data);
+        fclose($stream);
+    }
+
+    public function logError(\Throwable $th): void
+    {
+        $dir = $this->config->getDir();
+        if (!file_exists("$dir/logs")) mkdir("$dir/logs");
+        $data =  "[]";
+        file_put_contents("$dir/logs/errors.log", $data);
     }
 }

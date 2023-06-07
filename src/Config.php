@@ -8,9 +8,15 @@ class Config
 {
     private array $data = [];
     private string $dir = "";
+
     public function getVersion(): string
     {
         return $this->data["version"];
+    }
+
+    public function getDir(): string
+    {
+        return $this->dir;
     }
 
     public function getTimezone(): string
