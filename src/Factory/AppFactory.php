@@ -1,7 +1,6 @@
 <?php
 namespace Phpnova\Next\Factory;
 
-use DateTimeZone;
 use Phpnova\Next\App;
 use Phpnova\Next\Config;
 use Phpnova\Next\Routing\Router;

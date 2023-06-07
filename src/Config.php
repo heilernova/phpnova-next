@@ -52,6 +52,11 @@ class Config
         ];
     }
 
+    public function getDatabases()
+    {
+        
+    }
+
     public function save(): void
     {
         file_put_contents($this->dir . "/app.yaml", Yaml::dump($this->data, indent: 2));
