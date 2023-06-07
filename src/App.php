@@ -1,6 +1,7 @@
 <?php
 namespace Phpnova\Next;
 
+use Closure;
 use Phpnova\Next\Http\Attributes\Body;
 use Phpnova\Next\Http\BodyValid;
 use Phpnova\Next\Http\Cors;
@@ -20,6 +21,9 @@ class App
     private Config $config;
     private array $routes = [];
     private Request $request;
+    
+    /** @var (\Closure(Response $res): Response )|null */
+    private mixed $handleResponse = null;
 
     public function getConfig()
     {
@@ -47,6 +51,13 @@ class App
     public function delete()
     {
         
+    }
+
+    /**
+     * @param (\Closure(Response $res): Response ) $funtion
+     */
+    public function handleResponse(Closure $funtion){
+        $this->handleResponse = $funtion;
     }
 
     public function use(mixed ...$args)
@@ -109,6 +120,18 @@ class App
                     $response = $this->exceuteAction($action);
                 }
             }
+
+            if (!($response instanceof Response)) {
+                $response = new Response($response);
+            }    
+
+            # Manejamos la respuseta si existe
+            if ($this->handleResponse){
+                $fn = $this->handleResponse;
+                $response = $fn($response);
+            }
+
+
         } catch (HttpExeption $httpExeption) {
 
             $response = new Response( $httpExeption->getMessage(), $httpExeption->getCode());
@@ -124,9 +147,8 @@ class App
             ], 500);
         }
 
-        if (!($response instanceof Response)) {
-            $response = new Response($response);
-        }
+
+                    
 
         $reflection = new ReflectionClass($response);
         
