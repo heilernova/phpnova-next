@@ -44,11 +44,11 @@ class AppFactory
         return $app;
     }
 
-    private static function getConfigDefault()
+    private static function getConfigDefault(): array
     {
         return [
             "version" => "1.0.0.BETA",
-            "timezone" => "+00:00",
+            "timezone" => "UTC",
             "debug" => true,
             "private_keys" => [
                 "jwt" => bin2hex(openssl_random_pseudo_bytes(25))
