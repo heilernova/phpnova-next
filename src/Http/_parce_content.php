@@ -23,7 +23,7 @@ if (str_starts_with($content_type, 'application/json')){
 
 if (str_starts_with($content_type, 'multipart/form-data')){
     $request_data['body'] = $_POST;
-    $request_data['files'] = [];
+    $request_data['files'] = $_FILES;
     foreach($_FILES as $key => $val) {
         $request_data['files'][$key] = new FileData($val);
     }

@@ -4,6 +4,7 @@ namespace Phpnova\Next;
 use Closure;
 use DateTime;
 use Phpnova\Next\Http\Attributes\Body;
+use Phpnova\Next\Http\Attributes\Files;
 use Phpnova\Next\Http\BodyValid;
 use Phpnova\Next\Http\Cors;
 use Phpnova\Next\Http\HttpExeption;
@@ -249,6 +250,11 @@ class App
                         $temp = $this->request->body;
                         break;
                     }
+
+                    if ($att->getName() == Files::class){
+                        $temp = $this->request->files;
+                        break;
+                    }
                 }
 
                 if ($temp){
@@ -278,7 +284,7 @@ class App
         $date = $objectDate->format('Y-m-d H:i:s P');
         $method = str_pad($this->request->method, 6, ' ');
         $url = $this->request->url;
-        $body = json_encode($this->request->body);
+        $body = base64_encode(json_encode($this->request->body));
         $status = $response->getStatus();
         $data = "[$date] $method $status '$url' $body\n";
         $stream = fopen("$dir/logs/requests.log", 'a+');
