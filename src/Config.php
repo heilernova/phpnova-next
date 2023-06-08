@@ -2,12 +2,14 @@
 namespace Phpnova\Next;
 
 use Error;
+use Phpnova\Next\Config\Databases;
 use Symfony\Component\Yaml\Yaml;
 
 class Config
 {
     private array $data = [];
     private string $dir = "";
+    private Databases $databases;
 
     public function getVersion(): string
     {
@@ -54,7 +56,15 @@ class Config
 
     public function getDatabases()
     {
-        
+        return $this->databases;
+    }
+
+    public function update(array $options): void
+    {
+        foreach($options as $key => $val){
+            $this->data[$key] = $val;
+        }
+        $this->save();
     }
 
     public function save(): void

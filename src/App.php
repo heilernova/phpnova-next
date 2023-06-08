@@ -37,29 +37,6 @@ class App
         return $this->config;
     }
 
-    public function addControllers(string $controller, string $prefix = null)
-    {
-        // $this->mappig[] = [
-        //     "controller" => $controller,
-        //     "prefix" => 
-        // ];
-    }
-
-    public function get()
-    {
-
-    }
-
-    public function post()
-    {
-
-    }
-
-    public function delete()
-    {
-        
-    }
-
     /**
      * @param (\Closure(Response $res): Response ) $funtion
      */
@@ -264,13 +241,27 @@ class App
                 continue;
             } else {
                 # Es caso de ser un parametro nativo
-                if (array_key_exists($param->getName(), $this->request->params)){
-                    $params[] = $this->request->params[$param->getName()];
+
+                # Recorremos los atributos de los parametros
+                $temp = null;
+                foreach($param->getAttributes() as $att){
+                    if ($att->getName() == Body::class){
+                        $temp = $this->request->body;
+                        break;
+                    }
+                }
+
+                if ($temp){
+                    $params[] = $temp;
                 } else {
-                    if ($param->isOptional()){
-                        $param[] = $param->getDefaultValue();
+                    if (array_key_exists($param->getName(), $this->request->params)){
+                        $params[] = $this->request->params[$param->getName()];
                     } else {
-                        throw new ThrowError("Falta parametros en la conuslta");
+                        if ($param->isOptional()){
+                            $param[] = $param->getDefaultValue();
+                        } else {
+                            throw new ThrowError("Falta parametros en la consulta");
+                        }
                     }
                 }
             }

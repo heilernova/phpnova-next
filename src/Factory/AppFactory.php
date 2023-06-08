@@ -3,6 +3,7 @@ namespace Phpnova\Next\Factory;
 
 use Phpnova\Next\App;
 use Phpnova\Next\Config;
+use Phpnova\Next\Config\Databases;
 use Phpnova\Next\Routing\Router;
 use ReflectionClass;
 use Symfony\Component\Yaml\Yaml;
@@ -32,6 +33,7 @@ class AppFactory
         $reflection = new ReflectionClass($config);
         $reflection->getProperty("dir")->setValue($config, $dir);
         $reflection->getProperty("data")->setValue($config, $object);
+        $reflection->getProperty("databases")->setValue($config, new Databases($object['databases'] ?? [], $config));
 
         date_default_timezone_set($config->getTimezone());
 
