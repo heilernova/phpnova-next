@@ -26,7 +26,7 @@ class AppFactory
         $object = Yaml::parse(file_get_contents($appConfigPath));
 
         if ($enablePanel){
-            Router::use('nv-panel', fn() => require __DIR__ . '/../Panel/router.php');
+            Router::use('nv-panel', fn() => require __DIR__ . '/../Panel/panel-router.php');
         }
 
         $config = new Config();

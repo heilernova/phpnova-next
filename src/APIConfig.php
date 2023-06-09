@@ -5,7 +5,7 @@ use Error;
 use Phpnova\Next\Config\Databases;
 use Symfony\Component\Yaml\Yaml;
 
-class Config
+class APIConfig
 {
     private array $data = [];
     private string $dir = "";
@@ -29,7 +29,7 @@ class Config
         return $this->data["timezone"];;
     }
 
-    public function isDebug()
+    public function isDebug(): bool
     {
         return $this->data["debug"] ?? false;
     }

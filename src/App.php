@@ -85,7 +85,7 @@ class App
             $reflection_request->getProperty('method')->setValue($this->request, $method);
             $reflection_request->getProperty('headers')->setValue($this->request, apache_request_headers());
     
-            $contentBody = HttpFuns::getContentRequest();
+            $contentBody = HttpFuns::getContentRequest($this->config->getDir());
     
             if ($contentBody){
                 $reflection_request->getProperty("body")->setValue($this->request, $contentBody['body'] ?? null);

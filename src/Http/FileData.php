@@ -22,7 +22,7 @@ class FileData
      */
     public readonly string $extension;
 
-    public function __construct(array $data)
+    public function __construct(array $data, private readonly string $dir = '')
     {
         $this->name = $data['name'];
         $this->type = $data['type'];
@@ -46,7 +46,7 @@ class FileData
      */
     public function save(?string $name = null): string|false
     {
-        $dir = ''; #AppConfig::getDir();
+        $dir = $this->dir;
         $file_name = "";
         $file_extencion = $this->extension;
         $full_name = "";    
@@ -56,7 +56,6 @@ class FileData
             $name_temp = "";
             if (!str_ends_with($name, '/')){
                 $name_temp = array_pop($explode);
-                // $file
             }
             $temp = $dir;
             
@@ -69,7 +68,6 @@ class FileData
             }
             $temp = substr($temp, strlen($dir));
 
-            // echo $temp; exit;
             if ($name_temp) $file_name = "$temp/$name_temp";
             
         } else {
