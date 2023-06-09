@@ -11,6 +11,14 @@ class Config
     private string $dir = "";
     private Databases $databases;
 
+    public function get(string $name): mixed
+    {
+        if (!array_key_exists($name, $this->data)){
+            throw new ThrowError("No enctro la configuracion $name");
+        }
+        return $this->data[$name];
+    }
+
     public function getVersion(): string
     {
         return $this->data["version"];
