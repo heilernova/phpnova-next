@@ -13,6 +13,7 @@ use Phpnova\Next\Http\Request;
 use Phpnova\Next\Http\Response;
 use Phpnova\Next\Http\Validators\IsEmail;
 use Phpnova\Next\Routing\ControlRouter;
+use Phpnova\Next\Routing\Router;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
@@ -63,19 +64,7 @@ class App
 
     public function use(mixed ...$args)
     {
-        $num = count($args);
-        if ($num == 1){
-            $arg = $args[0];
-            if (is_string($arg)){
-                $reflection = new ReflectionClass($arg);
-                foreach ($reflection->getMethods() as $method){
-                    $this->routes[] = [
-                        "method" => "GET",
-                        "action" => [$arg, $method->getName() ]
-                    ];
-                }
-            }
-        }
+        Router::use(...$args);
     }
 
     public function enableCors(): void
