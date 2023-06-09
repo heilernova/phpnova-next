@@ -8,7 +8,7 @@
 use Phpnova\Next\Http\FileData;
 
 $headers = apache_request_headers();
-$content_type = explode(';', ($headers['Content-Type'] ?? $headers['content-type'] ?? ''))[0] ?? '';
+$content_type = explode(';', ($headers['Content-Type'] ?? $headers['content-type']) ?? '')[0] ?? '';
 
 if (str_starts_with($content_type, 'application/json')){
     $body_content = file_get_contents("php://input");
