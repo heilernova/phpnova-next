@@ -1,2 +1,1 @@
-
-[2023-06-07 16:43:55 -05:00] POST   404 '/nv-panel/users/109921/' {"email":"heilera@adminco"}
+[2023-06-08 16:36:50 -05:00] POST   200 '/nv-panel/databases/' eyJuYW1lIjoiZGIyIiwidHlwZSI6Im15c3FsIiwiaG9zdCI6ImxvY2FsaG9zdCIsInVzZXIiOiJyb290IiwicGFzc3dvcmQiOiIiLCJkYXRhYmFzZSI6ImRiIiwicG9ydCI6MzMwNn0=

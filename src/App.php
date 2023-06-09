@@ -208,6 +208,7 @@ class App
             }
         } else if (is_string($action)){
             # Si es un string, el namespace de un controlador
+            throw new ThrowError("No se definido la accion del código base");
         }
         return $response;
     }
