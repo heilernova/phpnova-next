@@ -12,7 +12,6 @@ class HttpFuns
         if (str_starts_with($content_type, 'application/json')){
             $body_content = file_get_contents("php://input");
             if ($body_content){
-                // $request_data['body'] = json_decode($body_content);
                 return [
                     "body" =>  json_decode($body_content)
                 ];

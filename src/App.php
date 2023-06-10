@@ -11,7 +11,6 @@ use Phpnova\Next\Http\HttpExeption;
 use Phpnova\Next\Http\HttpFuns;
 use Phpnova\Next\Http\Request;
 use Phpnova\Next\Http\Response;
-use Phpnova\Next\Http\Validators\IsEmail;
 use Phpnova\Next\Routing\ControlRouter;
 use Phpnova\Next\Routing\Router;
 use ReflectionClass;
@@ -21,7 +20,7 @@ use SplFileInfo;
 
 class App
 {
-    private Config $config;
+    private APIConfig $config;
     private array $routes = [];
     private Request $request;
     
@@ -34,7 +33,7 @@ class App
     /** @var (\Closure(\Throwable $res): Response )|null */
     private mixed $handleExeption = null;
 
-    public function getConfig()
+    public function getConfig(): APIConfig
     {
         return $this->config;
     }
@@ -69,7 +68,7 @@ class App
 
     public function enableCors(): void
     {
-        Cors::loadCors();
+        Cors::loadCors('*', '*', '*');
     }
 
     public function run(): never
@@ -210,7 +209,7 @@ class App
             # En caso de que sea una clase
             if ($type && !$param->getType()->isBuiltin()){
                 $class = $param->getType()->getName();
-                if ($class == Config::class){
+                if ($class == APIConfig::class){
                     $params[] = $this->config;
                 } else if ($class == Request::class){
                     $params[] = $this->request;

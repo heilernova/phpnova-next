@@ -16,6 +16,14 @@ class APIConfig
         return $this->data["version"];
     }
 
+    public function get(string $name): mixed
+    {
+        if (!array_key_exists($name, $this->data)){
+            throw new ThrowError("No se encontro la propiedad $name en el app.yaml");
+        }
+        return $this->data[$name];
+    }
+
     /**
      * Retorna el directorio donde se ejucta la aplicación
      */
@@ -43,17 +51,20 @@ class APIConfig
         }
     }
 
-    public function getUsers(): array
+    public function getUser(): array
     {
-        return $this->data["users"] ?? [];
+        if (!array_key_exists("user", $this->data)){
+           throw new ThrowError("No se encontro la información del usuario de acceso");
+        }
+        return $this->data["user"];
     }
 
-    public function addUser(string $name, string $email, string $password)
+    public function setUser(string $username, string $email, string $password): void
     {
-        $this->data["users"][] = [
-            "username" => strtolower($name),
-            "email" => strtolower($email),
-            "password" => password_hash($password, PASSWORD_DEFAULT, ['cos' => 3])
+        $this->data["user"] = [
+            "username" => $username,
+            "email" => $email,
+            "password" => $password
         ];
     }
 

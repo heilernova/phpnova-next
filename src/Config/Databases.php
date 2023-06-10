@@ -1,12 +1,13 @@
 <?php
 namespace Phpnova\Next\Config;
 
+use Phpnova\Next\APIConfig;
 use Phpnova\Next\Config;
 use Phpnova\Next\ThrowError;
 
 class Databases
 {
-    public function __construct(private array $data,private Config $config)
+    public function __construct(private array $data,private APIConfig $config)
     {
 
     }

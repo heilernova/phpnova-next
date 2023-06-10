@@ -1,10 +1,13 @@
 <?php
 namespace Phpnova\Next\Factory;
 
+use Phpnova\Next\APIConfig;
 use Phpnova\Next\App;
 use Phpnova\Next\Config;
 use Phpnova\Next\Config\Databases;
 use Phpnova\Next\Routing\Router;
+use Phpnova\Next\Utils\jwt;
+use Reflection;
 use ReflectionClass;
 use Symfony\Component\Yaml\Yaml;
 
@@ -29,11 +32,14 @@ class AppFactory
             Router::use('nv-panel', fn() => require __DIR__ . '/../Panel/panel-router.php');
         }
 
-        $config = new Config();
+        $config = new APIConfig();
         $reflection = new ReflectionClass($config);
         $reflection->getProperty("dir")->setValue($config, $dir);
         $reflection->getProperty("data")->setValue($config, $object);
         $reflection->getProperty("databases")->setValue($config, new Databases($object['databases'] ?? [], $config));
+
+        $reflection = new ReflectionClass(jwt::class);
+        $reflection->setStaticPropertyValue('key', $config->getPrivateKey('jwt'));
 
         date_default_timezone_set($config->getTimezone());
 
@@ -53,8 +59,12 @@ class AppFactory
             "debug" => true,
             "private_keys" => [
                 "jwt" => bin2hex(openssl_random_pseudo_bytes(25))
+            ],
+            "user" => [
+                "username" => "admin",
+                "email" => null,
+                "password" => password_hash("admin", PASSWORD_DEFAULT, ["cos" => 3])
             ]
-        
         ];
     }
 }

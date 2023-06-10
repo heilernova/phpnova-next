@@ -1,5 +1,5 @@
 <?php
-namespace Phpnova\NExt\Http;
+namespace Phpnova\Next\Http;
 
 use Phpnova\Rest\AppConfig;
 use SplFileInfo;
