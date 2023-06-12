@@ -3,15 +3,11 @@ namespace Phpnova\Next\Factory;
 
 use Phpnova\Next\APIConfig;
 use Phpnova\Next\App;
-use Phpnova\Next\Config;
 use Phpnova\Next\Config\Databases;
 use Phpnova\Next\Routing\Router;
 use Phpnova\Next\Utils\jwt;
-use Reflection;
 use ReflectionClass;
 use Symfony\Component\Yaml\Yaml;
-
-use function PHPSTORM_META\type;
 
 class AppFactory
 {
@@ -37,6 +33,7 @@ class AppFactory
         $reflection->getProperty("dir")->setValue($config, $dir);
         $reflection->getProperty("data")->setValue($config, $object);
         $reflection->getProperty("databases")->setValue($config, new Databases($object['databases'] ?? [], $config));
+        $reflection->getProperty("environments")->setValue($config, new Databases($object['environments'] ?? [], $config));
 
         $reflection = new ReflectionClass(jwt::class);
         $reflection->setStaticPropertyValue('key', $config->getPrivateKey('jwt'));

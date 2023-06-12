@@ -3,6 +3,7 @@ namespace Phpnova\Next;
 
 use Error;
 use Phpnova\Next\Config\Databases;
+use Phpnova\Next\Config\Environments;
 use Symfony\Component\Yaml\Yaml;
 
 class APIConfig
@@ -10,6 +11,7 @@ class APIConfig
     private array $data = [];
     private string $dir = "";
     private Databases $databases;
+    private Environments $environments;
 
     public function getVersion(): string
     {
@@ -79,6 +81,11 @@ class APIConfig
             $this->data[$key] = $val;
         }
         $this->save();
+    }
+
+    public function getEnvironments(): Environments
+    {
+        return $this->environments;
     }
 
     public function save(): void

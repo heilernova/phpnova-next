@@ -12,39 +12,23 @@ class Databases
 
     }
 
-    public function get(string $name)
+    public function get(string $name = null)
     {
-        if (array_key_exists($name, $this->data ?? [])){
-            return $this->data[$name];
-        }
+        if ($name && count($this->data) > 0) return $this->data[0];
+        $index = array_search($name, array_column($this->data, 'name'));
+        if ($index) return $this->data[$index];
         throw new ThrowError("No se encontrol la configuración de la base de datos");
     }
 
     public function getAll(): array
     {
-        $list = [];
-        foreach ($this->data ?? [] as $key => $val){
-            $list[] = [
-                'name' => $key,
-                ...$val
-            ];
-        }
-
-        return $list;
+        return $this->data;
     }
 
     public function add(string $name, string $type, string $host, string $user, string $password, string $database, int $port = null)
     {
         $db = $this->data ?? [];
-        $db[$name] = [
-            'type' => $type,
-            'host' => $host,
-            'user' => $user,
-            'password' => $password,
-            'database' => $database,
-            'port' => $port
-        ];
-
+        $db[] = ['name' => $name, 'type' => $type, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'port' => $port];
         $this->config->update(['databases' => $db]);
     }
 }

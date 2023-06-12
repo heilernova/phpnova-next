@@ -17,4 +17,14 @@ class jwt
     {
         return fbJWT::decode($token, new Key(self::$key, 'HS256'));
     }
+
+    public static function verify(string $token): bool
+    {
+        try {
+            self::decote($token);
+            return true;
+        } catch (\Throwable $th) {
+            return false;
+        }
+    }
 }

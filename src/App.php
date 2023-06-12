@@ -41,7 +41,7 @@ class App
     /**
      * @param (\Closure(Response $res): Response ) $funtion
      */
-    public function handleResponse(Closure $funtion)
+    public function handleResponse(Closure $funtion): void
     {
         $this->handleResponse = $funtion;
     }
@@ -49,19 +49,19 @@ class App
     /**
      * @param (\Closure(Response $res): Response ) $funtion
      */
-    public function handleHttpException(Closure $function)
+    public function handleHttpException(Closure $function): void
     {
         $this->handleHttpException = $function;
     }
     /**
      * @param (\Closure(\Throwable $res): Response ) $funtion
      */
-    public function handleException(Closure $function)
+    public function handleException(Closure $function): void
     {
         $this->handleExeption = $function;
     }
 
-    public function use(mixed ...$args)
+    public function use(mixed ...$args): void
     {
         Router::use(...$args);
     }
@@ -154,7 +154,7 @@ class App
         
         $type = $reflection->getProperty('type')->getValue($response);
         $status = $reflection->getProperty('status')->getValue($response);
-        $body = $reflection->getProperty('body')->getValue($response); #$body = $route;
+        $body = $reflection->getProperty('body')->getValue($response);
 
         $content_type = match($type){ 
             'json' => 'application/json',
@@ -177,7 +177,7 @@ class App
         exit();
     }
 
-    private function exceuteAction(array $route)
+    private function exceuteAction(array $route): mixed
     {
         $action = $route["action"];
         if (is_callable($action)){
