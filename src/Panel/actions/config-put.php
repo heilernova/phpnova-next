@@ -6,6 +6,7 @@ use Phpnova\Next\Http\Attributes\Body;
 return function(APIConfig $config, #[Body]object $body){
     $data = (array)$body;
 
+
     if (array_key_exists('private_keys', $data)){
         $keys = $config->get('private_keys');
         foreach ($data['private_keys'] as $key){

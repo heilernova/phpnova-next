@@ -78,6 +78,7 @@ class APIConfig
     public function update(array $options): void
     {
         foreach($options as $key => $val){
+            if (is_object($val)) $val = (array)$val;
             $this->data[$key] = $val;
         }
         $this->save();

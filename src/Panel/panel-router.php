@@ -11,13 +11,13 @@ router::get('/', function(){
 });
 
 # Verificamos la autenticación
-router::use(function(Request $req){
-    $token = $req->headers["Authorization"] ?? $req->headers['authorization'] ?? null;
-    if ($token && jwt::verify(substr($token, 7))){
-        return null;
-    }
-    throw new HttpExeption("Se require autorización", 401);
-});
+// router::use(function(Request $req){
+//     $token = $req->headers["Authorization"] ?? $req->headers['authorization'] ?? null;
+//     if ($token && jwt::verify(substr($token, 7))){
+//         return null;
+//     }
+//     throw new HttpExeption("Se require autorización", 401);
+// });
 
 router::post('sign-in', require __DIR__ . '/actions/sign-in-post.php');
 router::get('timezones', require __DIR__ . '/actions/timezones-get.php');
