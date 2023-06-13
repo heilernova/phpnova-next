@@ -97,9 +97,9 @@ class App
             $reflection_request->getProperty("queryParams")->setValue($this->request, $_GET);
 
             foreach($actions as $action){
-                $reflection_request->getProperty("params")->setValue($this->request, $action['params'] ?? []);
                 if (is_callable($action)){
-                    $response = $action();
+                    $func = new ReflectionFunction($action);
+                    $response = $func->invokeArgs($this->reflectionActionParams($func));
                     if (is_null($response)){
                         continue;
                     }
