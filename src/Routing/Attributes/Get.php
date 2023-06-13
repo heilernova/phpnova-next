@@ -5,7 +5,7 @@ use Attribute;
 #[Attribute]
 class Get extends Route
 {
-    public function __construct(string $path)
+    public function __construct(string $path = '/')
     {
         parent::__construct($path);
     }

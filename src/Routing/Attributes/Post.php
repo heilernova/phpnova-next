@@ -6,8 +6,8 @@ use Attribute;
 #[Attribute]
 class Post extends Route
 {
-    public function __construct(string $path)
+    public function __construct(string $path = '/')
     {
-        parent::__construct($path);
+        parent::__construct($path, 'POST');
     }
 }
